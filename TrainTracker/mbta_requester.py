@@ -1,22 +1,100 @@
 import os
-from dotenv import load_dotenv
+import requests
+import json
+from collections import defaultdict
 
 class MBTARequester:
     def __init__(self):
-        self.loadEnvironmentVariables()
         self.apiKey = os.getenv('MBTA_API_KEY')
+        self.apiEndpoint = os.getenv('MBTA_API_ENDPOINT')
+        self.headerDict = {"x-api-key" : self.apiKey} #We can use this dict as an HTTP header when sending requests.
+        self.buildRouteAndStopRelationships()
+
+    def getAllTrainRouteNames(self):
+        '''
+        Queries the MBTA API to get the name of each subway route.
+        Returns: 
+            route_names (List of String) : A list of the 'long_name' for each subway route. 
+        '''
+        routeEndpoint = self.apiEndpoint + "/routes/"
+        filterParams = {
+            "filter[type]" : "0,1",  # 0 and 1 represent 'Light Rail' and 'Heavy Rail' according to the API spec. 
+            "fields[route]" : "long_name" # filter the request to only ask for the 'long_name' field. 
+        }
+        response = requests.get(routeEndpoint, headers=self.headerDict, params=filterParams)
+        responseDict = json.loads(response.text)
+        route_names = []
+        for trainRoute in responseDict["data"]:
+            route_names.append(trainRoute["attributes"]["long_name"])
+        return route_names
+
+    def getAllTrainRouteIds(self):
+        routeEndpoint = self.apiEndpoint + "/routes/"
+        filterParams = {
+            "filter[type]" : "0,1",  # 0 and 1 represent 'Light Rail' and 'Heavy Rail' according to the API spec. 
+        }
+        response = requests.get(routeEndpoint, headers=self.headerDict, params=filterParams)
+        responseDict = json.loads(response.text)
+        route_ids = []
+        for trainRoute in responseDict["data"]:
+            route_ids.append(trainRoute["id"])
+        return route_ids
+
+    def getAllStopsOnRoute(self, routeId):
+        '''
+        Queries the MBTA API to get the name of each stop on the specified route.
+        Parameters:
+            routeId (string) : Unique identifier for an MBTA route. Looks like 'Red' or Green Line B'. Consult MBTA docs or API for full list.
+        Returns:
+            stop_names (list of string) : A list containing the name of each stop on the specified route. 
+        '''
+        stopEndpoint = self.apiEndpoint + "/stops/"
+        filterParams = {
+            "filter[route]" : f"{routeId}",
+            "fields[stop]" : "name"
+        }
+
+        response = requests.get(stopEndpoint, headers=self.headerDict, params=filterParams)
+        responseDict = json.loads(response.text)
+        stop_names = []
+        for stop in responseDict["data"]:
+            stop_names.append(stop["attributes"]["name"])
+        return stop_names
+
+    def buildRouteAndStopRelationships(self):
+        '''
+        Builds two dictionaries and stores them as member variables:
+        Route -> list of stops
+        Stop -> list of routes
+        '''
+
+        self.routeToStops = defaultdict(list)
+        self.stopToRoutes = defaultdict(list)
+
+        routeIds = self.getAllTrainRouteIds() #get the unique ID for every route in the system.
+
+        for route in routeIds:
+            stopsOnRoute = self.getAllStopsOnRoute(route)
+            self.routeToStops[route] = stopsOnRoute
+            for stop in stopsOnRoute:
+                self.stopToRoutes[stop].append(route)
+        
+        print(self.routeToStops)
+        print(self.stopToRoutes)
+
+    def prettyPrintResponse(self, response):
+        '''
+        Prints python response objects to the console in a human readable format. Helper function for debugging.
+        Parameters:
+            response (reqeusts.Response object) : A Python response object obtained with something like requests.get().
+        '''
+        print("Status Code: ", response.status_code)
+        jsonData = json.loads(response.text)
+        print(json.dumps(jsonData, indent=2))
 
     def __str__(self):
         return f"MBTA Requester object using API Key {self.apiKey}"
 
-    def loadEnvironmentVariables(self):
-        '''
-        Looks for a file named .env in the same directory that this .py file is in.
-        Then, assuming that .env file is a correctly formatted environment variable file,
-        this will load the contents into the current context, accessible through
-        functions like os.environ.get().
-        '''
-        pathToThisDirectory = os.path.abspath(os.path.dirname(__file__))
-        pathToEnvironmentFile = os.path.join(pathToThisDirectory, '.env')
-        load_dotenv(pathToEnvironmentFile)
+        
+
 

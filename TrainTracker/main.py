@@ -1,11 +1,13 @@
 from mbta_requester import MBTARequester
-import os
-from dotenv import load_dotenv
+from utils import loadEnvironmentVariablesFromFile
 
 def main():
-	load_dotenv()
+	loadEnvironmentVariablesFromFile()
 	requesterObject = MBTARequester()
-	print(requesterObject)
+	
+	#Question 1:
+	print("Question 1: List of Subway Routes")
+	print(requesterObject.getAllTrainRouteNames())
 
 if __name__ == "__main__":
 	main()
