@@ -8,7 +8,8 @@ class MBTARequester:
         self.apiKey = os.getenv('MBTA_API_KEY')
         self.apiEndpoint = os.getenv('MBTA_API_ENDPOINT')
         self.headerDict = {"x-api-key" : self.apiKey} #We can use this dict as an HTTP header when sending requests.
-        self.buildRouteAndStopRelationships()
+        self.routeToStops = None
+        self.stopToRoutes = None
 
     def getAllTrainRouteNames(self):
         '''
@@ -63,14 +64,13 @@ class MBTARequester:
 
     def buildRouteAndStopRelationships(self):
         '''
-        Builds two dictionaries and stores them as member variables:
-        Route -> list of stops
-        Stop -> list of routes
+        This funciton performs multiple queries on the MBTA API to store the many-to-many relationship between routes and stops as two member dictionaries.
+        self.routeToStops (dict[str, list[str]): A dictionary where each key is a route and each value is a list of stops on that route.
+        self.stopToRoutes (dictpstr, list[str]): A dictionary where each key is a stop and each value is a list of routes that that stop is on. 
         '''
-
+        print("Building route and stop relationships. This could take a second...")
         self.routeToStops = defaultdict(list)
         self.stopToRoutes = defaultdict(list)
-
         routeIds = self.getAllTrainRouteIds() #get the unique ID for every route in the system.
 
         for route in routeIds:
@@ -78,9 +78,6 @@ class MBTARequester:
             self.routeToStops[route] = stopsOnRoute
             for stop in stopsOnRoute:
                 self.stopToRoutes[stop].append(route)
-        
-        print(self.routeToStops)
-        print(self.stopToRoutes)
 
     def prettyPrintResponse(self, response):
         '''
@@ -91,6 +88,16 @@ class MBTARequester:
         print("Status Code: ", response.status_code)
         jsonData = json.loads(response.text)
         print(json.dumps(jsonData, indent=2))
+
+    def getRouteToStopsDict(self):
+        if(self.routeToStops == None):
+            self.buildRouteAndStopRelationships()
+        return self.routeToStops
+    
+    def getStopToRoutesDict(self):
+        if(self.stopToRoutes == None):
+            self.buildRouteAndStopRelationships()
+        return self.stopToRoutes
 
     def __str__(self):
         return f"MBTA Requester object using API Key {self.apiKey}"

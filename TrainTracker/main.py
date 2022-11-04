@@ -1,13 +1,16 @@
 from mbta_requester import MBTARequester
+from questions import doQuestionOne, doQuestionTwo, doQuestionThree, buildRouteConnectionGraph
 from utils import loadEnvironmentVariablesFromFile
+
 
 def main():
 	loadEnvironmentVariablesFromFile()
 	requesterObject = MBTARequester()
-	
-	#Question 1:
-	print("Question 1: List of Subway Routes")
-	print(requesterObject.getAllTrainRouteNames())
+
+	#doQuestionOne(requesterObject)
+	#doQuestionTwo(requesterObject)
+	#doQuestionThree(requesterObject)
+	buildRouteConnectionGraph(requesterObject)
 
 if __name__ == "__main__":
 	main()
