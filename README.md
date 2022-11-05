@@ -4,9 +4,6 @@
 
 <br />
 <div align="center", style="background-color:#33475b">
-  <a href="https://github.com/THWiseman/TrainTracker">
-      <img src="media/BroadInstituteLogo.png" alt="Logo" width="350" height="80">
-    </a>
     <a href="https://github.com/THWiseman/TrainTracker">
       <img src="media/MBTALogo.png" alt="Logo" width="350" height="80">
     </a>
