@@ -5,7 +5,7 @@
 <br />
 <div align="center", style="background-color:#33475b">
     <a href="https://github.com/THWiseman/TrainTracker">
-      <img src="media/MBTALogo.png" alt="Logo" width="350" height="80">
+      <img src="media/MBTALogo.png" alt="Logo" width="375" height="154">
     </a>
 </div>
 
@@ -39,6 +39,9 @@ python  /TrainTracker/main.py
 ## Usage
 Follow the prompts in your terminal window to walk through a few pre-programmed questions and answers. Hitting `enter` will advance the program,
 and typing `exit` will terminate the program. It's also safe to forcefully terminate the program with `ctrl + c`.
+
+## Testing
+Assuming that you successfully installed the project dependencies (step 3 above), you can run `pytest` from the project root directory to execute the included basic unit tests. 
 
 [contributors-shield]: https://img.shields.io/github/contributors/THWiseman/TrainTracker.svg?style=for-the-badge
 [contributors-url]: https://github.com/THWiseman/TrainTracker/graphs/contributors
