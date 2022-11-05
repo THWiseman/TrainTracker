@@ -95,4 +95,12 @@ class TestQuestions:
         }
         assert findShortestPathBFS(graph, "1", "5") == ["1", "2", "4", "5"]
 
-
+        #Can we handle the case where no path exists?
+        graph = {
+            "1" : ["2", "3"],
+            "2" : ["1"],
+            "3" : ["1"],
+            "4" : ["5"],
+            "5" : ["4"]
+        }
+        assert findShortestPathBFS(graph, "1", "5") == []

@@ -1,6 +1,6 @@
+from utils import loadEnvironmentVariablesFromFile
 from transit_requester import TransitRequester
 from questions import doQuestionOne, doQuestionTwo, doQuestionThree
-from utils import loadEnvironmentVariablesFromFile
 
 def main():
 	loadEnvironmentVariablesFromFile()
