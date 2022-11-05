@@ -1,6 +1,6 @@
 def doQuestionOne(requesterObject):
 	'''
-	Answers question one in the takehome: List all of the long names of each subway route.
+	Answers question one in the take home: List all of the long names of each subway route.
 	Parameters: requesterObject that can be used to query the MBTA API.
 	There were two ways to go about doing this question: Download all the results and then filter locally,
 	or instead rely on the server API to filter before results are received. There are pros and cons to each
@@ -61,7 +61,7 @@ def isValidStopName(requesterObject, stopName):
 
 def getStopFromUserInput(requesterObject):
 	while(True):
-		userInput = input("Subway stop or EXIT:")
+		userInput = input("Subway stop: ")
 		if(userInput.lower() == "exit"):
 			print("Terminating program")
 			exit(0)
@@ -69,12 +69,6 @@ def getStopFromUserInput(requesterObject):
 			return userInput
 		else:
 			print("Invalid input. Try again.")
-
-def getListOfRoutesThatConnectTwoStops(requesterObject, stopA, stopB):
-	'''
-	Helper function for question three. This function will use the dictionaries of the requester object to determine
-	which route(s) connect stopA and stopB.
-	'''
 
 def buildRouteConnectionGraph(requesterObject):
     '''
@@ -103,26 +97,61 @@ def buildRouteConnectionGraph(requesterObject):
     
     for route in routeConnectionGraph:
         routeConnectionGraph[route] = [*set(routeConnectionGraph[route])] #remove all duplicates from the list
-        isNotSelf = lambda x: x is not route
         routeConnectionGraph[route] = [ x for x in routeConnectionGraph[route] if x is not route ] #remove all references to self from the list. 
-
     print(routeConnectionGraph)
+    return routeConnectionGraph
         
-
+def findShortestPathBFS(graph, start, end):
+    '''
+    This function will perform breadth first search to find the shortest path between start and end, assuming one exists.
+    Paramaters:
+        graph (dict[str, list[str]]): A dictionary representing a graph. Each key in the dictionary is a node in the graph, and each
+        value is a list of nodes that that key is connected to. 
+        start (str): The node that we should start traversing from. 
+        end (str): The node that we are trying to find the shortest path to. 
+    Returns:
+        path (list[str]): The shortest path from start to end. This list will include both the start and end nodes. 
+    '''
+    if(start == end): #check for trivial case where start and end are the same node. 
+        return [start]
+    visited = []
+    queue = [[start]] #this queue is a list of lists, where each list is a potential path from start to end. 
+    while queue:
+        path = queue.pop(0) #get the path we're working on this iteration
+        node = path[-1] #get the last node in the path
+        if node not in visited:
+            print(node)
+            neighbors = graph[node]
+            for neighbor in neighbors:
+                newPath = list(path)
+                newPath.append(neighbor) #build a new path that is one node longer than the last and add it to the queue
+                queue.append(newPath)
+                if neighbor == end:
+                    return newPath
+        visited.append(node)
+    print(f"Path not found between {start} and {end}.")
+    return []
 
 def doQuestionThree(requesterObject):
 	'''
-	Answers question two on the takehome. 
+	Answers question three on the takehome. This prompt and accept user input and try to determine the combination of train routes
+    that connect one stop with another.  
 	Parameters: 
 		requesterObject (MBTARequester): Object that can be used to query the MBTA API.
 	'''
+	graph = buildRouteConnectionGraph(requesterObject)
 	print("Enter the name of two subway stops. I'll tell you which route(s) you'll need to get from stop A to stop B")
-	continueInputLoop = True
-	while(continueInputLoop):
+	while(True):
 		print("Enter the name for stop A:")
 		stopA = getStopFromUserInput(requesterObject)
 		print("Enter the name for stop B:")
 		stopB = getStopFromUserInput(requesterObject)
-		print(f"Stop A: {stopA}  Stop B: {stopB}")
-	
-
+		print(f"Path from {stopA} to {stopB}:")
+		routeA = requesterObject.getStopToRoutesDict()[stopA][0] #get a route that this stop is on
+		routeB = requesterObject.getStopToRoutesDict()[stopB][0]
+		path = findShortestPathBFS(graph, routeA, routeB)
+		print(path)
+		userInput = input("Continue? y/n")
+		if(userInput == "y"):
+            continue
+        else

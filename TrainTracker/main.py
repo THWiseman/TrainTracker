@@ -9,8 +9,7 @@ def main():
 
 	#doQuestionOne(requesterObject)
 	#doQuestionTwo(requesterObject)
-	#doQuestionThree(requesterObject)
-	buildRouteConnectionGraph(requesterObject)
+	doQuestionThree(requesterObject)
 
 if __name__ == "__main__":
 	main()
