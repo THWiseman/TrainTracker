@@ -1,74 +1,78 @@
 def doQuestionOne(requesterObject):
-	'''
-	Answers question one in the take home: List all of the long names of each subway route.
-	Parameters: requesterObject that can be used to query the MBTA API.
-	There were two ways to go about doing this question: Download all the results and then filter locally,
-	or instead rely on the server API to filter before results are received. There are pros and cons to each
-	approach, and I chose to filter using the server API.
-	Pros to using the server API to filter:
-		-Less data needs to be transmitted across the network, leading to a faster response.
-		-No data needs to be stored or manipulated locally. This has two advantages: 
-			-Less memory/CPU required by the server.
-			-Less bugprone code. By not storing, mutating, and filtering any data locally, there is less chance
-			of something incorrectly altering the data before we use it. This punts the responsiblity to the API,
-			which has been much more rigourously tested than this python script. 
-	Pros to downloading all data and filtering locally:
-		-More flexibility with how we want to search/filter the response since we're not limited by the API.
-			-For example, we can use familiar custom/python functions to filter/search data rather than hardcoding queries 
-			to the MBTA API specification. This might make our code more reusable across different APIs.
-		-Potentially fewer API requests in total, depending on how much we use the stored data.
-		-Ability to store a complete copy of the API route data in our own database or memory.
-			-Once the data is stored locally, we can use it as a cache to potentially prevent future API requests
-			-We can access the data even if the API goes down temporarily.
-	'''
-	input("Press enter to see a list of all subway routes.")
-	print("All subway routes in Boston: ")
-	print(requesterObject.getAllTrainRouteNames())
+    '''
+    Answers question one in the take home: List all of the long names of each subway route.
+    Parameters: requesterObject that can be used to query the MBTA API.
+    There were two ways to go about doing this question: Download all the results and then filter locally,
+    or instead rely on the server API to filter before results are received. There are pros and cons to each
+    approach, and I chose to filter using the server API.
+    Pros to using the server API to filter:
+        -Less data needs to be transmitted across the network, leading to a faster response.
+        -No data needs to be stored or manipulated locally. This has two advantages: 
+            -Less memory/CPU required by the server.
+            -Less bugprone code. By not storing, mutating, and filtering any data locally, there is less chance
+            of something incorrectly altering the data before we use it. This punts the responsiblity to the API,
+            which has been much more rigourously tested than this python script. 
+    Pros to downloading all data and filtering locally:
+        -More flexibility with how we want to search/filter the response since we're not limited by the API.
+            -For example, we can use familiar custom/python functions to filter/search data rather than hardcoding queries 
+            to the MBTA API specification. This might make our code more reusable across different APIs.
+        -Potentially fewer API requests in total, depending on how much we use the stored data.
+        -Ability to store a complete copy of the API route data in our own database or memory.
+            -Once the data is stored locally, we can use it as a cache to potentially prevent future API requests
+            -We can access the data even if the API goes down temporarily.
+    '''
+    input("Press enter to see a list of all subway routes.")
+    print("All subway routes in Boston: ")
+    print(requesterObject.getAllTrainRouteNames())
 
 def doQuestionTwo(requesterObject):
-	'''
-	Answers question two on the takehome. 
-	Parameters: 
-		requesterObject (MBTARequester): Object that can be used to query the MBTA API.
-	'''
-	input("Press enter to see the routes with the most and fewest stops.")
-	longestRoute = None
-	numStopsOnLongestRoute = None
-	shortestRoute = None
-	numStopsOnShortestRoute = None
-	routeToStopsDict = requesterObject.getRouteToStopsDict()
-	for route in routeToStopsDict.keys(): #Iterate through all routes and find which ones are the longest and shortest. 
-		numStops = len(requesterObject.routeToStops[route])
-		if(longestRoute == None or numStops > numStopsOnLongestRoute):
-			longestRoute = route
-			numStopsOnLongestRoute = numStops
-		if(shortestRoute == None or numStops < numStopsOnShortestRoute):
-			shortestRoute = route
-			numStopsOnShortestRoute = numStops
-	print(f"The longest route is {longestRoute} with {numStopsOnLongestRoute} stops.")
-	print(f"The shortest route is {shortestRoute} with {numStopsOnShortestRoute} stops.")
-	input("Press enter to see a list of the stops that connect two or more routes.")
-	stopToRoutesDict = requesterObject.getStopToRoutesDict()
-	for stop in stopToRoutesDict.keys(): #Iterate through all stops and find which ones are on more than one route. 
-		if(len(requesterObject.stopToRoutes[stop]) > 1):
-			print(f"The stop {stop} connects: {requesterObject.stopToRoutes[stop]}")
+    '''
+    Answers question two on the takehome. 
+    Parameters: 
+        requesterObject (MBTARequester): Object that can be used to query the MBTA API.
+    '''
+    input("Press enter to see the routes with the most and fewest stops.")
+    longestRoute = None
+    numStopsOnLongestRoute = None
+    shortestRoute = None
+    numStopsOnShortestRoute = None
+    routeToStopsDict = requesterObject.getRouteToStopsDict()
+    for route in routeToStopsDict.keys(): #Iterate through all routes and find which ones are the longest and shortest. 
+        numStops = len(requesterObject.routeToStops[route])
+        if(longestRoute == None or numStops > numStopsOnLongestRoute):
+            longestRoute = route
+            numStopsOnLongestRoute = numStops
+        if(shortestRoute == None or numStops < numStopsOnShortestRoute):
+            shortestRoute = route
+            numStopsOnShortestRoute = numStops
+    print(f"The longest route is {longestRoute} with {numStopsOnLongestRoute} stops.")
+    print(f"The shortest route is {shortestRoute} with {numStopsOnShortestRoute} stops.")
+    input("Press enter to see a list of the stops that connect two or more routes.")
+    stopToRoutesDict = requesterObject.getStopToRoutesDict()
+    for stop in stopToRoutesDict.keys(): #Iterate through all stops and find which ones are on more than one route. 
+        if(len(requesterObject.stopToRoutes[stop]) > 1):
+            print(f"The stop {stop} connects: {requesterObject.stopToRoutes[stop]}")
 
 def isValidStopName(requesterObject, stopName):
-	for stop in requesterObject.stopToRoutes.keys():
-		if(stopName == stop):
-			return True
-	return False
+    for stop in requesterObject.stopToRoutes.keys():
+        if(stopName == stop):
+            return True
+    return False
 
 def getStopFromUserInput(requesterObject):
-	while(True):
-		userInput = input("Subway stop: ")
-		if(userInput.lower() == "exit"):
-			print("Terminating program")
-			exit(0)
-		if(isValidStopName(requesterObject, userInput)):
-			return userInput
-		else:
-			print("Invalid input. Try again.")
+    '''
+    Helper function for question three. Will prompt the user to enter the name of a subway stop, validate the input, and return
+	the first valid input. Typing exit will exit the program.
+    '''
+    while(True):
+        userInput = input("Subway stop: ")
+        if(userInput.lower() == "exit"):
+            print("Terminating program")
+            exit(0)
+        if(isValidStopName(requesterObject, userInput)):
+            return userInput
+        else:
+            print("Invalid input. Try again.")
 
 def buildRouteConnectionGraph(requesterObject):
     '''
@@ -133,25 +137,26 @@ def findShortestPathBFS(graph, start, end):
     return []
 
 def doQuestionThree(requesterObject):
-	'''
-	Answers question three on the takehome. This prompt and accept user input and try to determine the combination of train routes
+    '''
+    Answers question three on the takehome. This prompt and accept user input and try to determine the combination of train routes
     that connect one stop with another.  
-	Parameters: 
-		requesterObject (MBTARequester): Object that can be used to query the MBTA API.
-	'''
-	graph = buildRouteConnectionGraph(requesterObject)
-	print("Enter the name of two subway stops. I'll tell you which route(s) you'll need to get from stop A to stop B")
-	while(True):
-		print("Enter the name for stop A:")
-		stopA = getStopFromUserInput(requesterObject)
-		print("Enter the name for stop B:")
-		stopB = getStopFromUserInput(requesterObject)
-		print(f"Path from {stopA} to {stopB}:")
-		routeA = requesterObject.getStopToRoutesDict()[stopA][0] #get a route that this stop is on
-		routeB = requesterObject.getStopToRoutesDict()[stopB][0]
-		path = findShortestPathBFS(graph, routeA, routeB)
-		print(path)
-		userInput = input("Continue? y/n")
-		if(userInput == "y"):
+    Parameters: 
+        requesterObject (MBTARequester): Object that can be used to query the MBTA API.
+    '''
+    graph = buildRouteConnectionGraph(requesterObject)
+    print("Enter the name of two subway stops. I'll tell you which route(s) you'll need to get from stop A to stop B")
+    while(True):
+        print("Enter the name for stop A:")
+        stopA = getStopFromUserInput(requesterObject)
+        print("Enter the name for stop B:")
+        stopB = getStopFromUserInput(requesterObject)
+        print(f"Path from {stopA} to {stopB}:")
+        routeA = requesterObject.getStopToRoutesDict()[stopA][0] #get a route that this stop is on
+        routeB = requesterObject.getStopToRoutesDict()[stopB][0]
+        path = findShortestPathBFS(graph, routeA, routeB)
+        print(path)
+        userInput = input("Continue? y/n: ")
+        if(userInput == "y"):
             continue
-        else
+        else:
+            break
