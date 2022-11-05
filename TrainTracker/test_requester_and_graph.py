@@ -42,7 +42,6 @@ class TestTransitRequester:
         assert 'Cleveland Circle' in self.requesterObject.stopToRoutes.keys()
         assert 'Green-C' in self.requesterObject.stopToRoutes['Cleveland Circle']
 
-
 class TestQuestions:
     '''
     This class will make sure that the input validation and graph building/traversal functions are working as expected.
