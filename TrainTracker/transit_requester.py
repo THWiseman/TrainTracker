@@ -6,7 +6,7 @@ from collections import defaultdict
 class TransitRequester:
     '''
     This class represents an object that can query a transit API and store its responses in order to learn different things about a
-    subway system. 
+    subway system.
     '''
     def __init__(self):
         self.apiKey = os.getenv('MBTA_API_KEY') #Get MBTA API key/URI from environment variables.
