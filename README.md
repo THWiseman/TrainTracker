@@ -13,7 +13,7 @@
 </div>
 
 ## Train Tracker
-This is a console Python application that uses the MBTA API to answer a few questions about Subway travel in Boston.
+This is a Python console application that uses the MBTA API to answer a few questions about subway travel in Boston.
 
 ## Getting Started
 To run this program, you will need git, Python 3.7+, and the latest version of pip (Python Package Installer) installed on your local machine and terminal. All are available through homebrew, although I recommend consulting an OS specific guide for installing them if this is your first time. Once those are installed:
@@ -40,7 +40,8 @@ python  /TrainTracker/main.py
 *Note: your local machine may require that you use the commands `pip3` or `python3` instead of `pip` and `python` 
 
 ## Usage
-
+Follow the prompts in your terminal window to walk through a few pre-programmed questions and answers. Hitting `enter` will advance the program,
+and typing `exit` will terminate the program. It's also safe to forcefully terminate the program with `ctrl + c`.
 
 [contributors-shield]: https://img.shields.io/github/contributors/THWiseman/TrainTracker.svg?style=for-the-badge
 [contributors-url]: https://github.com/THWiseman/TrainTracker/graphs/contributors
