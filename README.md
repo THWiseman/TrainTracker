@@ -41,7 +41,7 @@ python  /TrainTracker/main.py
 
 ## Usage
 Follow the prompts in your terminal window to walk through a few pre-programmed questions and answers. Hitting `enter` will advance the program,
-and typing `exit` will terminate the program. It's also safe to forcefully terminate the program with `ctrl + c` or `command + c`. 
+and typing `exit` will terminate the program. It's also safe to forcefully terminate the program with `ctrl + c`.
 
 [contributors-shield]: https://img.shields.io/github/contributors/THWiseman/TrainTracker.svg?style=for-the-badge
 [contributors-url]: https://github.com/THWiseman/TrainTracker/graphs/contributors
