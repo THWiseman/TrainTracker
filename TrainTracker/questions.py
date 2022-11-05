@@ -8,14 +8,14 @@ def doQuestionOne(requesterObject):
     Pros to using the server API to filter:
         -Less data needs to be transmitted across the network, leading to a faster response.
         -No data needs to be stored or manipulated locally. This has two advantages: 
-            -Less memory/CPU required by the server.
+            -Less local memory/CPU required.
             -Less bugprone code. By not storing, mutating, and filtering any data locally, there is less chance
-            of something incorrectly altering the data before we use it. This punts the responsiblity to the API,
+            of something incorrectly altering the data before we use it. This punts the filtering responsiblity to the API,
             which has been much more rigourously tested than this python script. 
     Pros to downloading all data and filtering locally:
         -More flexibility with how we want to search/filter the response since we're not limited by the API.
             -For example, we can use familiar custom/python functions to filter/search data rather than hardcoding queries 
-            to the MBTA API specification. This might make our code more reusable across different APIs.
+            to the MBTA API specification. This makes our code more reusable across different APIs.
         -Potentially fewer API requests in total, depending on how much we use the stored data.
         -Ability to store a complete copy of the API route data in our own database or memory.
             -Once the data is stored locally, we can use it as a cache to potentially prevent future API requests
@@ -54,7 +54,7 @@ def doQuestionTwo(requesterObject):
             print(f"The stop {stop} connects: {requesterObject.stopToRoutes[stop]}")
 
 def isValidStopName(requesterObject, stopName):
-    for stop in requesterObject.stopToRoutes.keys():
+    for stop in requesterObject.getStopToRoutesDict():
         if(stopName == stop):
             return True
     return False
@@ -117,6 +117,10 @@ def findShortestPathBFS(graph, start, end):
     '''
     if(start == end): #check for trivial case where start and end are the same node. 
         return [start]
+    if(start not in graph.keys() or end not in graph.keys()): #check for case where start and/or end aren't in the graph.
+        print("Error: Start or end node not in provided graph")
+        return []
+    
     visited = []
     queue = [[start]] #this queue is a list of lists, where each list is a potential path from start to end. 
     while queue:
