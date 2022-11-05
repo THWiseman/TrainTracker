@@ -27,12 +27,12 @@ cd TrainTracker
 
 3. Install the project dependencies using pip. 
 ```sh
-pip install -r /TrainTracker/requirements.txt
+pip install -r ./TrainTracker/requirements.txt
 ```
 
 4. Run the project
 ```sh
-python  /TrainTracker/main.py
+python  ./TrainTracker/main.py
 ```
 *Note: your local machine may require that you use the commands `pip3` or `python3` instead of `pip` and `python` 
 
