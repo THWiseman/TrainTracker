@@ -3,17 +3,21 @@ import requests
 import json
 from collections import defaultdict
 
-class MBTARequester:
+class TransitRequester:
+    '''
+    This class represents an object that can query a transit API and store its responses in order to learn different things about a
+    subway system. 
+    '''
     def __init__(self):
-        self.apiKey = os.getenv('MBTA_API_KEY')
+        self.apiKey = os.getenv('MBTA_API_KEY') #Get MBTA API key/URI from environment variables.
         self.apiEndpoint = os.getenv('MBTA_API_ENDPOINT')
         self.headerDict = {"x-api-key" : self.apiKey} #We can use this dict as an HTTP header when sending requests.
-        self.routeToStops = None
+        self.routeToStops = None #Dictionaries that we may build later, if required.
         self.stopToRoutes = None
 
     def getAllTrainRouteNames(self):
         '''
-        Queries the MBTA API to get the name of each subway route.
+        Queries the Transit API to get the long name (which is human readable) of each subway route.
         Returns: 
             route_names (List of String) : A list of the 'long_name' for each subway route. 
         '''
@@ -30,22 +34,27 @@ class MBTARequester:
         return route_names
 
     def getAllTrainRouteIds(self):
+        '''
+        Queries the Transit API to get a unique ID for each subway route. 
+        Returns: 
+            routeIds (list[str]): A list of strings, where each entry is the unique ID of a particular subway route. 
+        '''
         routeEndpoint = self.apiEndpoint + "/routes/"
         filterParams = {
             "filter[type]" : "0,1",  # 0 and 1 represent 'Light Rail' and 'Heavy Rail' according to the API spec. 
         }
         response = requests.get(routeEndpoint, headers=self.headerDict, params=filterParams)
         responseDict = json.loads(response.text)
-        route_ids = []
+        routeIds = []
         for trainRoute in responseDict["data"]:
-            route_ids.append(trainRoute["id"])
-        return route_ids
+            routeIds.append(trainRoute["id"])
+        return routeIds
 
     def getAllStopsOnRoute(self, routeId):
         '''
-        Queries the MBTA API to get the name of each stop on the specified route.
+        Queries the Transit API to get the name of each stop on the specified route.
         Parameters:
-            routeId (string) : Unique identifier for an MBTA route. Looks like 'Red' or Green Line B'. Consult MBTA docs or API for full list.
+            routeId (string) : Unique identifier for a route. Looks like 'Red' or Green Line B'. Consult the transit docs or API for a full list.
         Returns:
             stop_names (list of string) : A list containing the name of each stop on the specified route. 
         '''
@@ -64,7 +73,7 @@ class MBTARequester:
 
     def buildRouteAndStopRelationships(self):
         '''
-        This funciton performs multiple queries on the MBTA API to store the many-to-many relationship between routes and stops as two member dictionaries.
+        This funciton performs multiple queries on the Transit API to store the many-to-many relationship between routes and stops as two member dictionaries.
         self.routeToStops (dict[str, list[str]): A dictionary where each key is a route and each value is a list of stops on that route.
         self.stopToRoutes (dictpstr, list[str]): A dictionary where each key is a stop and each value is a list of routes that that stop is on. 
         '''
@@ -90,17 +99,31 @@ class MBTARequester:
         print(json.dumps(jsonData, indent=2))
 
     def getRouteToStopsDict(self):
+        '''
+        This function provides external access to the route to stops dict. It also allows us to lazily build the dictionary 
+        (i.e. hold off building it until it's actually needed) and allows us to reuse/cache the results of previous builds. 
+        Returns:
+            self.routeToStops (dict[str,list[str]]): A dictionary where each key is a subway route, and each value is a list of stops
+            on that subway route. 
+        '''
         if(self.routeToStops == None):
-            self.buildRouteAndStopRelationships()
+            self.buildRouteAndStopRelationships() #build the dictionary if one doesn't already exist. 
         return self.routeToStops
     
     def getStopToRoutesDict(self):
+        '''
+        This function provides external access to the stop to routes dict. It also allows us to lazily build the dictionary 
+        (i.e. hold off building it until it's actually needed) and allows us to reuse/cache the results of preview builds. 
+        Returns:
+            self.stopToRoutes (dict[str,list[str]]): A dictionary where each key is a subway stop, and each value is a list of routes
+            associated with that subway stop.
+        '''
         if(self.stopToRoutes == None):
             self.buildRouteAndStopRelationships()
         return self.stopToRoutes
 
     def __str__(self):
-        return f"MBTA Requester object using API Key {self.apiKey}"
+        return f"Transit Requester object using API Endpoint {self.apiEndpoint}"
 
         
 

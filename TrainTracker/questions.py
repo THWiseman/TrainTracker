@@ -102,7 +102,6 @@ def buildRouteConnectionGraph(requesterObject):
     for route in routeConnectionGraph:
         routeConnectionGraph[route] = [*set(routeConnectionGraph[route])] #remove all duplicates from the list
         routeConnectionGraph[route] = [ x for x in routeConnectionGraph[route] if x is not route ] #remove all references to self from the list. 
-    print(routeConnectionGraph)
     return routeConnectionGraph
         
 def findShortestPathBFS(graph, start, end):
