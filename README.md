@@ -41,7 +41,18 @@ Follow the prompts in your terminal window to walk through a few pre-programmed 
 and typing `exit` will terminate the program. It's also safe to forcefully terminate the program with `ctrl + c`.
 
 ## Testing
-Assuming that you successfully installed the project dependencies (step 3 above), you can run `pytest` from the project root directory to execute the included basic unit tests. 
+Assuming that you successfully installed the project dependencies (step 3 above), you can run `pytest` from the project root directory to execute the included unit tests. Your output should look something like:
+```sh
+> pytest
+=============================================================== test session starts ================================================================
+platform ***
+rootdir: /some/path/to/TrainTracker
+collected 8 items                                                                                                                                  
+
+TrainTracker/test_requester.py ........                                                                                                      [100%]
+
+================================================================ 8 passed in 6.12s =================================================================
+```
 
 [contributors-shield]: https://img.shields.io/github/contributors/THWiseman/TrainTracker.svg?style=for-the-badge
 [contributors-url]: https://github.com/THWiseman/TrainTracker/graphs/contributors
