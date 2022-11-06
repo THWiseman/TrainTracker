@@ -41,7 +41,7 @@ Follow the prompts in your terminal window to walk through a few pre-programmed 
 and typing `exit` will terminate the program. It's also safe to forcefully terminate the program with `ctrl + c`.
 
 ## Testing
-Assuming that you successfully installed the project dependencies (step 3 above), you can run `python -m pytest` from the project root directory to execute the included unit tests. Your output should look something like:
+Assuming that you successfully installed the project dependencies (step 3 above), you can run `python -m pytest` from the project root directory to execute the included unit tests. You may need to replace `python` with `python3`. Your output should look something like:
 ```sh
 > python -m pytest
 =============================================================== test session starts ================================================================
