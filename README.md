@@ -13,7 +13,7 @@
 This is a Python console application that uses the MBTA API to answer a few questions about subway travel in Boston.
 
 ## Getting Started
-To run this program, you will need git, Python 3.7+, and the latest version of pip (Python Package Installer) installed on your local machine and terminal. All are available through homebrew, although I recommend consulting an OS specific guide for installing them if this is your first time. Once those are installed:
+To run this program, you will need git, Python 3.7+, and the latest version of pip (Python Package Installer) installed on your local machine and terminal. All are available through your favorite package manager, although I recommend consulting an OS specific guide for installing them if this is your first time. Once those are installed:
 
 1. Clone this repo to a local directory
 ```sh
