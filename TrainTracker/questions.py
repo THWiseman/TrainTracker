@@ -140,8 +140,8 @@ def findShortestPathBFS(graph, start, end):
 
 def doQuestionThree(requesterObject):
     '''
-    Answers question three on the takehome. This prompt and accept user input and try to determine the combination of train routes
-    that connect one stop with another.  
+    Answers question three on the takehome. This will prompt for and accept user input. The user can input two train stops, and the program will output 
+    a combination of train routes that connects the two stops.
     Parameters: 
         requesterObject (MBTARequester): Object that can be used to query the MBTA API.
     '''
