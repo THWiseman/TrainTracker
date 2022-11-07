@@ -127,7 +127,6 @@ def findShortestPathBFS(graph, start, end):
         path = queue.pop(0) #get the path we're working on this iteration
         node = path[-1] #get the last node in the path
         if node not in visited:
-            print(node)
             neighbors = graph[node]
             for neighbor in neighbors:
                 newPath = list(path)
