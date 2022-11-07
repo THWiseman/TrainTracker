@@ -1,16 +1,20 @@
-import os
 import requests
 import json
 from collections import defaultdict
 
 class TransitRequester:
     '''
-    This class represents an object that can query a transit API and store its responses in order to learn different things about a
-    subway system.
+    This class represents an object that can query a transit API in order to learn different things about a subway system.
     '''
-    def __init__(self):
-        self.apiKey = os.getenv('MBTA_API_KEY') #Get MBTA API key/URI from environment variables.
-        self.apiEndpoint = os.getenv('MBTA_API_ENDPOINT')
+    def __init__(self, apiKey, apiEndpoint):
+        '''
+        Constructor for TransitRequester.
+        Parameters:
+            apiKey (str): A secret key that will be included in HTTP headers in order to gain access to the external API.
+            apiEndpoint (str): A URI that HTTP requests should be sent to. Looks like 'https://api-v3.mbta.com'
+        '''
+        self.apiKey = apiKey
+        self.apiEndpoint = apiEndpoint
         self.headerDict = {"x-api-key" : self.apiKey} #We can use this dict as an HTTP header when sending requests.
         self.routeToStops = None #Dictionaries that we may build later, if required.
         self.stopToRoutes = None
@@ -74,8 +78,10 @@ class TransitRequester:
     def buildRouteAndStopRelationships(self):
         '''
         This funciton performs multiple queries on the Transit API to store the many-to-many relationship between routes and stops as two member dictionaries.
-        self.routeToStops (dict[str, list[str]): A dictionary where each key is a route and each value is a list of stops on that route.
-        self.stopToRoutes (dictpstr, list[str]): A dictionary where each key is a stop and each value is a list of routes that that stop is on. 
+        Because this function performs multiple API requests (~ one for each route in the subway network), it can take a few seconds to complete.
+        This function builds the members:
+            self.routeToStops (dict[str, list[str]): A dictionary where each key is a route and each value is a list of stops on that route.
+            self.stopToRoutes (dictpstr, list[str]): A dictionary where each key is a stop and each value is a list of routes that that stop is on. 
         '''
         print("Building route and stop relationships. This could take a second...")
         self.routeToStops = defaultdict(list)
@@ -113,7 +119,7 @@ class TransitRequester:
     def getStopToRoutesDict(self):
         '''
         This function provides external access to the stop to routes dict. It also allows us to lazily build the dictionary 
-        (i.e. hold off building it until it's actually needed) and allows us to reuse/cache the results of preview builds. 
+        (i.e. hold off building it until it's actually needed) and allows us to reuse/cache the results of previous builds. 
         Returns:
             self.stopToRoutes (dict[str,list[str]]): A dictionary where each key is a subway stop, and each value is a list of routes
             associated with that subway stop.
@@ -124,7 +130,3 @@ class TransitRequester:
 
     def __str__(self):
         return f"Transit Requester object using API Endpoint {self.apiEndpoint}"
-
-        
-
-

@@ -4,6 +4,16 @@ from TrainTracker.transit_requester import TransitRequester
 from TrainTracker.utils import loadEnvironmentVariablesFromFile
 from TrainTracker.questions import findShortestPathBFS, isValidStopName, buildRouteConnectionGraph
 
+def buildMBTARequester():
+    '''
+    Helper function for testing. Instantiates a TransitRequester object that uses the MBTA API and returns it.
+    '''
+    loadEnvironmentVariablesFromFile()
+    requesterObject = TransitRequester(
+        os.getenv('MBTA_API_KEY'),
+        os.getenv('MBTA_API_ENDPOINT'))
+    return requesterObject
+
 class TestTransitRequester:
     '''
     This class will run a few tests to make sure our TransitRequester class is working properly. 
@@ -15,18 +25,18 @@ class TestTransitRequester:
         assert os.getenv('MBTA_API_ENDPOINT') == "https://api-v3.mbta.com"
 
     def test_construction(self): #Test to make sure the transit requester object is properly initialized
-        self.requesterObject = TransitRequester()
+        self.requesterObject = buildMBTARequester()
         assert self.requesterObject.__str__() == "Transit Requester object using API Endpoint https://api-v3.mbta.com"
         assert self.requesterObject.routeToStops == None
         assert self.requesterObject.stopToRoutes == None
 
     def test_basic_api_request(self): #Test that we can successfully make a basic API call. We're not trying to test the external API here, so we just call something simple. 
-        self.requesterObject = TransitRequester()
+        self.requesterObject = buildMBTARequester()
         routes = self.requesterObject.getAllTrainRouteNames()
         assert 'Red Line' in routes
     
     def test_route_relationship_builder(self):
-        self.requesterObject = TransitRequester()
+        self.requesterObject = buildMBTARequester()
         self.requesterObject.buildRouteAndStopRelationships()
         stopToRoutes = self.requesterObject.stopToRoutes
         routeToStops = self.requesterObject.routeToStops
@@ -35,7 +45,7 @@ class TestTransitRequester:
         assert 'Red' in stopToRoutes['Kendall/MIT'] #Make sure that Kendall/MIT is on the red line
 
     def test_result_caching(self):
-        self.requesterObject = TransitRequester()
+        self.requesterObject = buildMBTARequester()
         assert self.requesterObject.stopToRoutes == None
         self.requesterObject.getStopToRoutesDict() #Make sure that after we call the getter that the results stay cached as a member variable
         assert self.requesterObject.stopToRoutes != None
@@ -49,7 +59,7 @@ class TestQuestions:
     that stuff is working as expected during development. 
     '''
     def test_input_validation(self):
-        self.requesterObject = TransitRequester()
+        self.requesterObject = buildMBTARequester()
         invalidInputs = ["", None, "12345", 0, "0", -1, "-1", 1, "1", dict(), "\n", "\t", 'Redd Line', 'OOrange']
         for input in invalidInputs:
             assert isValidStopName(self.requesterObject, input) == False
@@ -58,7 +68,7 @@ class TestQuestions:
             assert isValidStopName(self.requesterObject,input)
     
     def test_build_graph(self):
-        self.requesterObject = TransitRequester()
+        self.requesterObject = buildMBTARequester()
         graph = buildRouteConnectionGraph(self.requesterObject)
         assert 'Red' in graph.keys()
         assert 'Orange' in graph['Red']

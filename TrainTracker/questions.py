@@ -1,7 +1,9 @@
 def doQuestionOne(requesterObject):
     '''
     Answers question one in the take home: List all of the long names of each subway route.
-    Parameters: requesterObject that can be used to query the MBTA API.
+    Parameters: 
+        requesterObject (TransitRequester): object that can be used to query a transit API.
+    
     There were two ways to go about doing this question: Download all the results and then filter locally,
     or instead rely on the server API to filter before results are received. There are pros and cons to each
     approach, and I chose to filter using the server API.
@@ -27,9 +29,9 @@ def doQuestionOne(requesterObject):
 
 def doQuestionTwo(requesterObject):
     '''
-    Answers question two on the takehome. 
+    Answers question two on the takehome. It will output the shortest route, the longest route, and all the stops that connect two or more routes. 
     Parameters: 
-        requesterObject (MBTARequester): Object that can be used to query the MBTA API.
+        requesterObject (TransitRequester): Object that can be used to query a transit API. 
     '''
     input("Press enter to see the routes with the most and fewest stops.")
     longestRoute = None
@@ -54,6 +56,15 @@ def doQuestionTwo(requesterObject):
             print(f"The stop {stop} connects: {requesterObject.stopToRoutes[stop]}")
 
 def isValidStopName(requesterObject, stopName):
+    '''
+    Helper function used to validate user input. If the provided string is a stop name (according to the external API),
+    return True. Otherwise, return false.
+    Parameters:
+        requesterObject (TransitRequester): Object that can be used to query a transit API.
+        stopName (str): String to test for validity. Likely came from user input.
+    Returns:
+        bool: True if stop name is valid, false otherwise. 
+    '''
     for stop in requesterObject.getStopToRoutesDict():
         if(stopName == stop):
             return True
@@ -82,7 +93,7 @@ def buildRouteConnectionGraph(requesterObject):
     We'll represent the graph as a dictionary, where each key is a route and each value is a list of routes that the key is 
     directly connected to. We wont be storing data about the stops that connect the routes for the sake of simplicity.
     Parameters: 
-        requesterObject (MBTARequester): Object that can be used to query the MBTA API.
+        requesterObject (TransitRequester): Object that can be used to query a transit API. 
     Returns: 
         routeConnectionGraph dict[str,list[str]]: A dictionary that represents the connections between subway routes. 
     '''
@@ -143,7 +154,7 @@ def doQuestionThree(requesterObject):
     Answers question three on the takehome. This will prompt for and accept user input. The user can input two train stops, and the program will output 
     a combination of train routes that connects the two stops.
     Parameters: 
-        requesterObject (MBTARequester): Object that can be used to query the MBTA API.
+        requesterObject (TransitRequester): Object that can be used to query a transit API.
     '''
     graph = buildRouteConnectionGraph(requesterObject)
     print("Enter the name of two subway stops. I'll tell you which route(s) you'll need to get from stop A to stop B")
